@@ -12,13 +12,25 @@
 function setup() {
   const allEpisodes = getAllEpisodes();
   makePageForEpisodes(allEpisodes);
+  showAllEpisodes(allEpisodes);
 }
 
 function makePageForEpisodes(episodeList) {
   const rootElem = document.getElementById("root");
   rootElem.textContent = `Got ${episodeList.length} episode(s)`;
+
+
 }
 
+
+function showAllEpisodes(episodes){
+  const rootElem = document.getElementById("root");
+for (let i = 0; i < episodes.length; i++) {
+  let episodeName = document.createElement("p");
+  episodeName.innerHTML = episodes[i].name;
+  rootElem.appendChild(episodeName);
+  }
+}
+
+
 window.onload = setup;
-
-
