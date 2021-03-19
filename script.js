@@ -27,8 +27,16 @@ function showAllEpisodes(episodes){
   const rootElem = document.getElementById("root");
 for (let i = 0; i < episodes.length; i++) {
   let episodeName = document.createElement("p");
+  let seasonNumber = document.createElement("p");
+  let episodeNumber = document.createElement("p");
+  let imageElement = document.createElement("img");
+  let summaryText = document.createElement("p");
   episodeName.innerHTML = episodes[i].name;
-  rootElem.appendChild(episodeName);
+  seasonNumber.innerHTML = episodes[i].season;
+  episodeNumber.innerHTML = episodes[i].number;
+  imageElement.src = episodes[i].image.medium;
+  summaryText.innerHTML = episodes[i].summary;
+  rootElem.append(episodeName, seasonNumber, episodeNumber, imageElement, summaryText);
   }
 }
 
