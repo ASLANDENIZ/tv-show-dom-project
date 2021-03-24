@@ -8,24 +8,19 @@
 // the episode's summary text
 
 
-//.....................................................................
+// let episodesArray = [];
 const rootElem = document.getElementById("root");
+const allEpisodes = getAllEpisodes();
+let filteredEpisodes = allEpisodes;
 
-function setup() {
-  const allEpisodes = getAllEpisodes();
-  makePageForEpisodes(allEpisodes);
-  showAllEpisodes(allEpisodes);
-  
-}
 
 function makePageForEpisodes(episodeList) {
   const rootElem = document.getElementById("root");
   rootElem.textContent = `Got ${episodeList.length} episode(s)`;
 
-
 }
 
-function createCard(episode){
+function createCard(episode) {
 
   let episodeName = document.createElement("p");
   let seasonNumber = document.createElement("p");
@@ -58,40 +53,13 @@ function createCard(episode){
 }
 
 function showAllEpisodes(episodes) {
-  let inputElement = document.createElement("input");
-  inputElement.setAttribute("type", "text");
-  document.body.insertBefore(inputElement, rootElem);
-  inputElement.addEventListener("keyup", () => {
-    // console.log(inputElement.value);
-    // Search box daki text ile eslesen episodelari bul
-    episodes.filter(episode => {
-      if (episode.name.includes(inputElement.value) || episode.summary.includes(inputElement.value)){
-      return true;  
-      } else {
-        return false;
-      } 
-    })
-    .forEach(episode => {
-    divRowElement.innerHTML = divRowElement.innerHTML + createCard(episode);
-    })
-    // let newArray = [];
-    // episodes.forEach(episode => {
-    //   if (episode.name.includes(inputElement.value) || episode.summary.includes(inputElement.value)) {
-    //     newArray.push(episode.id);
-    //   }
-    // })
-    // console.log(newArray);
-//eslesen episodlari karta donusturup listele
-
-  })
-
 
   let divContainerElement = document.createElement("div");
   divContainerElement.className = "container";
   let divRowElement = document.createElement("div");
   divRowElement.className = "row";
   for (let i = 0; i < episodes.length; i++) {
-//  function created for the box model
+    //  function created for the box model
     divRowElement.innerHTML = divRowElement.innerHTML + createCard(episodes[i]);
   }
 
@@ -100,24 +68,30 @@ function showAllEpisodes(episodes) {
 }
 
 
-// function searchBox(episodes) {
-//   let inputElement = document.createElement("input");
-//   inputElement.setAttribute("type", "text");
-//   // rootElem.appendChild(inputElement);
-//   document.body.insertBefore(inputElement, rootElem)
-//   inputElement.addEventListener("keyup", () => {
-//     console.log(inputElement.value);
-//     let newArray = [];
-//     episodes.forEach(episode => {
-//       if(episode.name.includes(inputElement.value) || episode.summary.includes(inputElement.value)){
-// newArray.push(episode.id);
-//       }
-//     })
-//     console.log(newArray);
-//     return newArray;
+let searchBarElement = document.createElement("input");
+searchBarElement.setAttribute("type", "text");
+document.body.insertBefore(searchBarElement, rootElem);
+searchBarElement.addEventListener("keyup", (e) => {
+  let searchString = e.target.value.toLowerCase();
+  filteredEpisodes = allEpisodes.filter(episode => {
+    return episode.name.toLowerCase().includes(searchString) || episode.summary.toLowerCase().includes(searchString);
+  })
+divRowElement = document.querySelector(".row");
+divRowElement.parentNode.removeChild(divRowElement);
+  makePageForEpisodes(filteredEpisodes);
+  showAllEpisodes(filteredEpisodes);
+  console.log(filteredEpisodes);
+});
 
-//   })
-// }
+
+function setup() {
+
+  makePageForEpisodes(filteredEpisodes);
+  showAllEpisodes(filteredEpisodes);
+
+}
+
+
 
 
 
