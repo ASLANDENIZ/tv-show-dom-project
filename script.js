@@ -80,11 +80,11 @@ searchBarElement.addEventListener("keyup", (e) => {
   filteredEpisodes = allEpisodes.filter(episode => {
     return episode.name.toLowerCase().includes(searchString) || episode.summary.toLowerCase().includes(searchString);
   })
-divRowElement = document.querySelector(".row");
-divRowElement.parentNode.removeChild(divRowElement);
+  divRowElement = document.querySelector(".row");
+  divRowElement.parentNode.removeChild(divRowElement);
   makePageForEpisodes(filteredEpisodes);
   showAllEpisodes(filteredEpisodes);
-  
+
 });
 
 //create episodes drop-down list
@@ -97,22 +97,34 @@ let optionElement = document.createElement("option");
 optionElement.innerHTML = "--Please choose an episode--";
 labelElement.appendChild(selectElement);
 selectElement.appendChild(optionElement);
-allEpisodes.forEach (episode => {
+allEpisodes.forEach(episode => {
   let optionEpisodesElement = document.createElement("option");
   selectElement.appendChild(optionEpisodesElement);
   let episodeNames = episode.name;
   let seasonNumbers = episode.season.toString();
   let episodeNumbers = episode.number.toString();
-  optionEpisodesElement.innerHTML = `${episodeNames} S${seasonNumbers.padStart(2,"0")}E${episodeNumbers.padStart(2, "0")}`
+  let uniqueCode = optionEpisodesElement.innerHTML = `S${seasonNumbers.padStart(2, "0")}E${episodeNumbers.padStart(2, "0")} ${episodeNames}`
+  // create unique code for each episode
+  episode.uniqueCodeNumber = uniqueCode;
+  // console.log(uniqueCode);
+
+  console.log(optionEpisodesElement.innerHTML);
+})
+// console.log(allEpisodes)
+selectElement.addEventListener("change", (e) => {
+  console.log(e);
+  // console.log(uniqueCode);
+  // console.log(selectElement.innerHTML);
+//   filteredEpisodes = allEpisodes.filter(episode => {
+//     return episode.uniqueCodeNumber == ;
+//   console.log(uniqueCode);
+// })
 })
 
-selectElement.addEventListener("click", () => {
-  console.log(click)
-})
 
 
 
-  
+
 
 
 
