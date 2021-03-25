@@ -20,6 +20,11 @@ function makePageForEpisodes(episodeList) {
 
 }
 
+
+
+
+
+
 function createCard(episode) {
 
   let episodeName = document.createElement("p");
@@ -33,7 +38,6 @@ function createCard(episode) {
 
   imageElement = episode.image.medium;
   summaryText = episode.summary;
-
 
   let boxModel =
     `<div class="col-md-5th-1 col-sm-4">
@@ -80,8 +84,36 @@ divRowElement = document.querySelector(".row");
 divRowElement.parentNode.removeChild(divRowElement);
   makePageForEpisodes(filteredEpisodes);
   showAllEpisodes(filteredEpisodes);
-  console.log(filteredEpisodes);
+  
 });
+
+//create episodes drop-down list
+let labelElement = document.createElement("label")
+labelElement.innerHTML = "Choose an episode:"
+document.body.insertBefore(labelElement, rootElem);
+let selectElement = document.createElement("select");
+selectElement.id = "choose-episode"
+let optionElement = document.createElement("option");
+optionElement.innerHTML = "--Please choose an episode--";
+labelElement.appendChild(selectElement);
+selectElement.appendChild(optionElement);
+allEpisodes.forEach (episode => {
+  let optionEpisodesElement = document.createElement("option");
+  selectElement.appendChild(optionEpisodesElement);
+  let episodeNames = episode.name;
+  let seasonNumbers = episode.season.toString();
+  let episodeNumbers = episode.number.toString();
+  optionEpisodesElement.innerHTML = `${episodeNames} S${seasonNumbers.padStart(2,"0")}E${episodeNumbers.padStart(2, "0")}`
+})
+
+selectElement.addEventListener("click", () => {
+  console.log(click)
+})
+
+
+
+  
+
 
 
 function setup() {
