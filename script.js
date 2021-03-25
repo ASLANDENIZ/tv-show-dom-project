@@ -22,9 +22,6 @@ function makePageForEpisodes(episodeList) {
 
 
 
-
-
-
 function createCard(episode) {
 
   let episodeName = document.createElement("p");
@@ -106,19 +103,21 @@ allEpisodes.forEach(episode => {
   let uniqueCode = optionEpisodesElement.innerHTML = `S${seasonNumbers.padStart(2, "0")}E${episodeNumbers.padStart(2, "0")} ${episodeNames}`
   // create unique code for each episode
   episode.uniqueCodeNumber = uniqueCode;
-  // console.log(uniqueCode);
-
-  console.log(optionEpisodesElement.innerHTML);
+  
 })
-// console.log(allEpisodes)
+
+console.log(allEpisodes)
 selectElement.addEventListener("change", (e) => {
-  console.log(e);
-  // console.log(uniqueCode);
-  // console.log(selectElement.innerHTML);
-//   filteredEpisodes = allEpisodes.filter(episode => {
-//     return episode.uniqueCodeNumber == ;
-//   console.log(uniqueCode);
-// })
+  filteredEpisodes = allEpisodes.filter(episode => {
+    return e.currentTarget.value == episode.uniqueCodeNumber;
+  })
+  console.log(filteredEpisodes);
+  divRowElement = document.querySelector(".row");
+  divRowElement.parentNode.removeChild(divRowElement);
+  makePageForEpisodes(filteredEpisodes);
+  showAllEpisodes(filteredEpisodes);
+  // console.log(e.currentTarget.value);
+
 })
 
 
