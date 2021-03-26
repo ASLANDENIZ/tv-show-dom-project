@@ -8,7 +8,7 @@
 // the episode's summary text
 
 
-// let episodesArray = [];
+// Global scoop variables
 const rootElem = document.getElementById("root");
 const allEpisodes = getAllEpisodes();
 let filteredEpisodes = allEpisodes;
@@ -16,12 +16,11 @@ let filteredEpisodes = allEpisodes;
 
 function makePageForEpisodes(episodeList) {
   const rootElem = document.getElementById("root");
-  rootElem.textContent = `Got ${episodeList.length} episode(s)`;
+  rootElem.textContent = `Displaying ${episodeList.length}/73 episode(s)`;
 
 }
 
-
-
+//this function creates a card 
 function createCard(episode) {
 
   let episodeName = document.createElement("p");
@@ -53,6 +52,7 @@ function createCard(episode) {
 
 }
 
+// this function creates BootsTrap elements and show each episode card on the screen
 function showAllEpisodes(episodes) {
 
   let divContainerElement = document.createElement("div");
@@ -69,8 +69,56 @@ function showAllEpisodes(episodes) {
 }
 
 
+let labelElement = document.createElement("label")
+labelElement.id = "label-element";
+labelElement.innerHTML = "Choose an episode:"
+document.body.insertBefore(labelElement, rootElem);
+let selectElement = document.createElement("select");
+selectElement.id = "choose-episode"
+let optionElement = document.createElement("option");
+optionElement.innerHTML = "--All Episodes--";
+optionElement.value = "lordOfTheOptions";
+
+
+labelElement.appendChild(selectElement);
+selectElement.appendChild(optionElement);
+allEpisodes.forEach(episode => {
+  let optionEpisodesElement = document.createElement("option");
+  selectElement.appendChild(optionEpisodesElement);
+  let episodeNames = episode.name;
+  let seasonNumbers = episode.season.toString();
+  let episodeNumbers = episode.number.toString();
+  let uniqueCode = optionEpisodesElement.innerHTML = `S${seasonNumbers.padStart(2, "0")}E${episodeNumbers.padStart(2, "0")} ${episodeNames}`
+  // creates a unique code for each episode
+  episode.uniqueCodeNumber = uniqueCode;
+
+})
+
+
+
+selectElement.addEventListener("change", (e) => {
+  console.log(e.currentTarget.value);
+  filteredEpisodes = allEpisodes.filter(episode => {
+    return e.currentTarget.value == episode.uniqueCodeNumber;
+  })
+
+  if (e.currentTarget.value == "lordOfTheOptions") {
+    filteredEpisodes = allEpisodes;
+  }
+
+  divRowElement = document.querySelector(".row");
+  divRowElement.parentNode.removeChild(divRowElement);
+  makePageForEpisodes(filteredEpisodes);
+  showAllEpisodes(filteredEpisodes);
+
+})
+
+
+
 let searchBarElement = document.createElement("input");
 searchBarElement.setAttribute("type", "text");
+searchBarElement.placeholder = "your search term..."
+
 document.body.insertBefore(searchBarElement, rootElem);
 searchBarElement.addEventListener("keyup", (e) => {
   let searchString = e.target.value.toLowerCase();
@@ -85,40 +133,7 @@ searchBarElement.addEventListener("keyup", (e) => {
 });
 
 //create episodes drop-down list
-let labelElement = document.createElement("label")
-labelElement.innerHTML = "Choose an episode:"
-document.body.insertBefore(labelElement, rootElem);
-let selectElement = document.createElement("select");
-selectElement.id = "choose-episode"
-let optionElement = document.createElement("option");
-optionElement.innerHTML = "--Please choose an episode--";
-labelElement.appendChild(selectElement);
-selectElement.appendChild(optionElement);
-allEpisodes.forEach(episode => {
-  let optionEpisodesElement = document.createElement("option");
-  selectElement.appendChild(optionEpisodesElement);
-  let episodeNames = episode.name;
-  let seasonNumbers = episode.season.toString();
-  let episodeNumbers = episode.number.toString();
-  let uniqueCode = optionEpisodesElement.innerHTML = `S${seasonNumbers.padStart(2, "0")}E${episodeNumbers.padStart(2, "0")} ${episodeNames}`
-  // create unique code for each episode
-  episode.uniqueCodeNumber = uniqueCode;
-  
-})
 
-console.log(allEpisodes)
-selectElement.addEventListener("change", (e) => {
-  filteredEpisodes = allEpisodes.filter(episode => {
-    return e.currentTarget.value == episode.uniqueCodeNumber;
-  })
-  console.log(filteredEpisodes);
-  divRowElement = document.querySelector(".row");
-  divRowElement.parentNode.removeChild(divRowElement);
-  makePageForEpisodes(filteredEpisodes);
-  showAllEpisodes(filteredEpisodes);
-  // console.log(e.currentTarget.value);
-
-})
 
 
 
