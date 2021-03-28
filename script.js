@@ -10,7 +10,35 @@
 
 // Global scoop variables
 const rootElem = document.getElementById("root");
-const allEpisodes = getAllEpisodes();
+let allEpisodes
+// = getAllEpisodesByFetch();
+// console.log(allEpisodes);
+// getAllEpisodes();
+
+
+
+function getAllEpisodesByFetch() {
+
+  fetch("https://api.tvmaze.com/shows/82/episodes")
+    .then(response => {
+      if (response.ok) {
+        return response.json()
+      } else {
+        throw new Error("Error")
+      }
+    })
+    .then(data => {
+      // console.log(data);
+      allEpisodes = data
+
+    })
+    .catch(err => console.log(err))
+
+}
+
+
+
+console.log(allEpisodes);
 let filteredEpisodes = allEpisodes;
 
 
@@ -144,6 +172,7 @@ searchBarElement.addEventListener("keyup", (e) => {
 
 function setup() {
 
+  getAllEpisodesByFetch();
   makePageForEpisodes(filteredEpisodes);
   showAllEpisodes(filteredEpisodes);
 
