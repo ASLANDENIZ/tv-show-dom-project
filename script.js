@@ -10,16 +10,31 @@
 
 // Global scoop variables
 const rootElem = document.getElementById("root");
-let allEpisodes
-// = getAllEpisodesByFetch();
-// console.log(allEpisodes);
-// getAllEpisodes();
+let allEpisodes = [];
+let filteredEpisodes;
+
+function setup() {
+  let shows = getAllShows();
+  showAllShows(shows);
+  getAllEpisodesByFetch("https://api.tvmaze.com/shows/82/episodes").then(episodes => {
+    allEpisodes = [...episodes];
+    // filteredEpisodes = allEpisodes;
+
+    makePageForEpisodes(allEpisodes);
+    showAllEpisodes(allEpisodes);
+    episodeList(allEpisodes);
+  })
+  
+  // fetchAShow(shows);
+}
+
+window.onload = setup;
 
 
+//this function fetch show
 
-function getAllEpisodesByFetch() {
-
-  fetch("https://api.tvmaze.com/shows/82/episodes")
+function getAllEpisodesByFetch(url) {
+  return fetch(url)
     .then(response => {
       if (response.ok) {
         return response.json()
@@ -28,20 +43,64 @@ function getAllEpisodesByFetch() {
       }
     })
     .then(data => {
-      // console.log(data);
-      allEpisodes = data
-
+      return data;
     })
     .catch(err => console.log(err))
-
 }
 
+//create episodes drop-down list
+let showLabelElement = document.createElement("label");
+showLabelElement.style.color = "red";
+showLabelElement.innerHTML = "Choose a show:  ";
+document.body.insertBefore(showLabelElement, rootElem);
+let showSelectElement = document.createElement("select");
+showLabelElement.appendChild(showSelectElement);
 
 
-console.log(allEpisodes);
-let filteredEpisodes = allEpisodes;
+//this functions create options for shows
+function showAllShows(shows) {
+  shows.forEach(show => {
+    let showOptions = document.createElement("option");
+    showOptions.innerHTML = show.name;
+    showSelectElement.appendChild(showOptions);
+  })
+}
+
+//event listener for show selection
+// selectElement.addEventListener("change", (e) => {
+//   console.log(e.currentTarget.value);
+//   filteredEpisodes = allEpisodes.filter(episode => {
+//     return e.currentTarget.value === episode.uniqueCodeNumber;
+//   })
+
+//   if (e.currentTarget.value == "lordOfTheOptions") {
+//     filteredEpisodes = allEpisodes;
+//   }
+//   document.getElementById("searchBar").value = "";
+//   divRowElement = document.querySelector(".row");
+//   divRowElement.parentNode.removeChild(divRowElement);
+//   makePageForEpisodes(filteredEpisodes);
+//   showAllEpisodes(filteredEpisodes);
+
+// })
+
+//--------------------------------------------------------------
+//working on it
+// function fetchAShow(tvShows){
+//   showSelectElement.addEventListener("change", (e) => {
+//     console.log(e.currentTarget.value);
+//    let filteredShow = tvShows.filter(show => {
+//       return show.name == e.currentTarget.value
+//     })
+//     console.log(filteredShow);
+//     getAllEpisodesByFetch(filteredShow.url);
+//   })
+// }
+// ---------------------------------------------------------------------
 
 
+
+//this function displays number of episodes shown on the screen
 function makePageForEpisodes(episodeList) {
   const rootElem = document.getElementById("root");
   rootElem.textContent = `Displaying ${episodeList.length}/73 episode(s)`;
@@ -50,7 +109,6 @@ function makePageForEpisodes(episodeList) {
 
 //this function creates a card 
 function createCard(episode) {
-
   let episodeName = document.createElement("p");
   let seasonNumber = document.createElement("p");
   let episodeNumber = document.createElement("p");
@@ -63,7 +121,7 @@ function createCard(episode) {
   imageElement = episode.image.medium;
   summaryText = episode.summary;
 
-  let boxModel =
+  let card =
     `<div class="col-md-5th-1 col-sm-4">
             <div class="episodeTitle">
               <h4>${episodeName} S${seasonNumber.padStart(2, "0")}E${episodeNumber.padStart(2, "0")}</h4>
@@ -76,8 +134,7 @@ function createCard(episode) {
             </div>
           </div>`
 
-  return boxModel;
-
+  return card;
 }
 
 // this function creates BootsTrap elements and show each episode card on the screen
@@ -97,6 +154,9 @@ function showAllEpisodes(episodes) {
 }
 
 
+
+
+//here we create select menu
 let labelElement = document.createElement("label")
 labelElement.id = "label-element";
 labelElement.innerHTML = "Choose an episode:"
@@ -106,34 +166,37 @@ selectElement.id = "choose-episode"
 let optionElement = document.createElement("option");
 optionElement.innerHTML = "--All Episodes--";
 optionElement.value = "lordOfTheOptions";
-
-
 labelElement.appendChild(selectElement);
 selectElement.appendChild(optionElement);
-allEpisodes.forEach(episode => {
-  let optionEpisodesElement = document.createElement("option");
-  selectElement.appendChild(optionEpisodesElement);
-  let episodeNames = episode.name;
-  let seasonNumbers = episode.season.toString();
-  let episodeNumbers = episode.number.toString();
-  let uniqueCode = optionEpisodesElement.innerHTML = `S${seasonNumbers.padStart(2, "0")}E${episodeNumbers.padStart(2, "0")} ${episodeNames}`
-  // creates a unique code for each episode
-  episode.uniqueCodeNumber = uniqueCode;
-
-})
 
 
+// this function create all options for select menu
+function episodeList(episodes) {
+  episodes.forEach(episode => {
+    let optionEpisodesElement = document.createElement("option");
+    selectElement.appendChild(optionEpisodesElement);
+    let episodeNames = episode.name;
+    let seasonNumbers = episode.season.toString();
+    let episodeNumbers = episode.number.toString();
+    let uniqueCode = optionEpisodesElement.innerHTML = `S${seasonNumbers.padStart(2, "0")}E${episodeNumbers.padStart(2, "0")} ${episodeNames}`
+    // creates a unique code for each episode
+    episode.uniqueCodeNumber = uniqueCode;
+  })
+}
 
+
+
+//this event listener help you to choose which episode to show on the screen
 selectElement.addEventListener("change", (e) => {
   console.log(e.currentTarget.value);
   filteredEpisodes = allEpisodes.filter(episode => {
-    return e.currentTarget.value == episode.uniqueCodeNumber;
+    return e.currentTarget.value === episode.uniqueCodeNumber;
   })
 
   if (e.currentTarget.value == "lordOfTheOptions") {
     filteredEpisodes = allEpisodes;
   }
-
+  document.getElementById("searchBar").value = "";
   divRowElement = document.querySelector(".row");
   divRowElement.parentNode.removeChild(divRowElement);
   makePageForEpisodes(filteredEpisodes);
@@ -142,12 +205,14 @@ selectElement.addEventListener("change", (e) => {
 })
 
 
-
+//here we create search bar
 let searchBarElement = document.createElement("input");
+searchBarElement.id = "searchBar";
 searchBarElement.setAttribute("type", "text");
 searchBarElement.placeholder = "your search term..."
-
 document.body.insertBefore(searchBarElement, rootElem);
+
+//search bar event listener
 searchBarElement.addEventListener("keyup", (e) => {
   let searchString = e.target.value.toLowerCase();
   filteredEpisodes = allEpisodes.filter(episode => {
@@ -157,10 +222,8 @@ searchBarElement.addEventListener("keyup", (e) => {
   divRowElement.parentNode.removeChild(divRowElement);
   makePageForEpisodes(filteredEpisodes);
   showAllEpisodes(filteredEpisodes);
-
 });
 
-//create episodes drop-down list
 
 
 
@@ -170,16 +233,12 @@ searchBarElement.addEventListener("keyup", (e) => {
 
 
 
-function setup() {
-
-  getAllEpisodesByFetch();
-  makePageForEpisodes(filteredEpisodes);
-  showAllEpisodes(filteredEpisodes);
-
-}
 
 
 
 
 
-window.onload = setup;
+
+
+
+
