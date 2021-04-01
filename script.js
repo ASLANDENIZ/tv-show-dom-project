@@ -27,7 +27,7 @@ function setup() {
     showAllEpisodes(allEpisodes);
     episodeList(allEpisodes);
   })
-  
+
   // fetchAShow(shows);
 }
 
@@ -89,7 +89,7 @@ function showAllShows(shows) {
 
 //--------------------------------------------------------------
 //working on it
-function fetchAShow(tvShows){
+function fetchAShow(tvShows) {
   showSelectElement.addEventListener("change", (e) => {
     let filteredShow = tvShows.filter(show => show.name == e.currentTarget.value)
     console.log(filteredShow);
