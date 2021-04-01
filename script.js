@@ -12,10 +12,13 @@
 const rootElem = document.getElementById("root");
 let allEpisodes = [];
 let filteredEpisodes;
+let shows;
 
 function setup() {
-  let shows = getAllShows();
+  shows = getAllShows();
   showAllShows(shows);
+
+
   getAllEpisodesByFetch("https://api.tvmaze.com/shows/82/episodes").then(episodes => {
     allEpisodes = [...episodes];
     // filteredEpisodes = allEpisodes;
@@ -66,7 +69,7 @@ function showAllShows(shows) {
   })
 }
 
-//event listener for show selection
+// event listener for show selection
 // selectElement.addEventListener("change", (e) => {
 //   console.log(e.currentTarget.value);
 //   filteredEpisodes = allEpisodes.filter(episode => {
@@ -86,16 +89,23 @@ function showAllShows(shows) {
 
 //--------------------------------------------------------------
 //working on it
-// function fetchAShow(tvShows){
-//   showSelectElement.addEventListener("change", (e) => {
-//     console.log(e.currentTarget.value);
-//    let filteredShow = tvShows.filter(show => {
-//       return show.name == e.currentTarget.value
-//     })
-//     console.log(filteredShow);
-//     getAllEpisodesByFetch(filteredShow.url);
-//   })
-// }
+function fetchAShow(tvShows){
+  showSelectElement.addEventListener("change", (e) => {
+    let filteredShow = tvShows.filter(show => show.name == e.currentTarget.value)
+    console.log(filteredShow);
+    getAllEpisodesByFetch(filteredShow[0].url).then(episodes => {
+      let allEpisodes = [...episodes];
+      // filteredEpisodes = allEpisodes;
+
+      makePageForEpisodes(allEpisodes);
+      showAllEpisodes(allEpisodes);
+      episodeList(allEpisodes);
+    })
+
+  })
+}
+
+
 // ---------------------------------------------------------------------
 
 
@@ -188,7 +198,6 @@ function episodeList(episodes) {
 
 //this event listener help you to choose which episode to show on the screen
 selectElement.addEventListener("change", (e) => {
-  console.log(e.currentTarget.value);
   filteredEpisodes = allEpisodes.filter(episode => {
     return e.currentTarget.value === episode.uniqueCodeNumber;
   })
