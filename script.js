@@ -52,7 +52,18 @@ showSelectElement.id = 'display-shows';
 showLabelElement.appendChild(showSelectElement);
 //this functions create options for shows
 function showAllShows(shows) {
-  shows.forEach((show) => {
+  let sortedShows = shows.sort(function(a,b){
+    var nameA = a.name.toLowerCase();
+    var nameB = b.name.toLowerCase();
+    if(nameA < nameB) {
+      return -1;
+    } else if (nameA > nameB) {
+      return 1;
+    } else {
+      return 0;
+    }
+  })
+  sortedShows.forEach((show) => {
     let showOptions = document.createElement('option');
     showOptions.innerHTML = show.name;
     showOptions.value = show.id;
