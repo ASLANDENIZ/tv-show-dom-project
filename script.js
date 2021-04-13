@@ -1,12 +1,5 @@
 
-//You can edit ALL of the code here
-// All episodes must be shown
-// For each episode, AT LEAST following must be displayed:
-// the episode's name
-// the season number
-// the episode number
-// the episode's medium-sized image
-// the episode's summary text
+
 // Global scoop variables
 const rootElem = document.getElementById('root');
 let allEpisodes = [];
@@ -15,19 +8,10 @@ let shows;
 
 function setup() {
   shows = getAllShows();
-  // console.log('showss', shows);
   showAllShows(shows);
   showAllEpisodes(shows, CreateShowsCard);
-  // getAllEpisodesByFetch(`https://api.tvmaze.com/shows/82/episodes`).then(
-  //   (episodes) => {
-  //     allEpisodes = [...episodes];
-  //     makePageForEpisodes(allEpisodes);
-  //     showAllEpisodes(allEpisodes);
-  //     episodeList(allEpisodes);
-  //   }
-  // );
-
 }
+
 window.onload = setup;
 //this function fetch show
 function getAllEpisodesByFetch(url) {
@@ -65,6 +49,12 @@ function showAllShows(shows) {
       return 0;
     }
   })
+  let optionElement = document.createElement('option');
+  optionElement.innerHTML = '--All Shows--';
+  optionElement.value = 'lordOfTheShows';
+  optionElement.id = 'lordOfTheShows';
+  showSelectElement.appendChild(optionElement);
+
   sortedShows.forEach((show) => {
     let showOptions = document.createElement('option');
     showOptions.innerHTML = show.name;
@@ -80,46 +70,43 @@ function showAllShows(shows) {
     });
   });
 }
-// event listener for show selection
 
+// event listener for show selection
 let totalEpisodes;
 selectShowEl = document.getElementById('display-shows');
 selectShowEl.addEventListener('change', (e) => {
   console.log('select', e.target.value);
-  const selectedShowId = e.target.value;
-  getAllEpisodesByFetch(
-    `https://api.tvmaze.com/shows/${selectedShowId}/episodes`
-  ).then((episodes) => {
-    allEpisodes = [...episodes];
-    totalEpisodes = allEpisodes;
-    makePageForEpisodes(allEpisodes);
-    showAllEpisodes(allEpisodes, createCard);
-    episodeList(allEpisodes);
-  });
+  if (e.target.value === 'lordOfTheShows') {
+    divRowElement = document.querySelector('.row');
+    divRowElement.parentNode.removeChild(divRowElement);
+    showSearchBar.style.display = "inline";
+    showAllEpisodes(shows, CreateShowsCard);
+
+  } else {
+    const selectedShowId = e.target.value;
+    getAllEpisodesByFetch(
+      `https://api.tvmaze.com/shows/${selectedShowId}/episodes`
+    ).then((episodes) => {
+      allEpisodes = [...episodes];
+      totalEpisodes = allEpisodes;
+      makePageForEpisodes(allEpisodes, totalEpisodes);
+      showAllEpisodes(allEpisodes, createCard);
+      episodeList(allEpisodes);
+      showSearchBar.style.display = "none";
+      selectElement.style.display = "inline";
+      labelElement.style.display = "inline";
+      searchBarElement.style.display = "inline";
+    });
+  }
 });
 
-//working on it
-// function fetchAShow(tvShows) {
-//   showSelectElement.addEventListener('change', (e) => {
-//     let filteredShow = tvShows.filter(
-//       (show) => show.name == e.currentTarget.value
-//     );
-//     console.log(filteredShow);
-//     getAllEpisodesByFetch(filteredShow[0].url).then((episodes) => {
-//       let allEpisodes = [...episodes];
-//       // filteredEpisodes = allEpisodes;
-//       makePageForEpisodes(allEpisodes);
-//       showAllEpisodes(allEpisodes);
-//       episodeList(allEpisodes);
-//     });
-//   });
-// }
-// ---------------------------------------------------------------------
-//this function displays number of episodes shown on the screen
-function makePageForEpisodes(episodeList) {
+
+function makePageForEpisodes(episodeList, totalEpisodes) {
   const rootElem = document.getElementById('root');
   //first I need to console.log chosen show array
   //second I need to use it's length;
+  console.log("episodeList", episodeList);
+  console.log("totalEpisodes", totalEpisodes);
   rootElem.textContent = `Displaying ${episodeList.length}/${totalEpisodes.length}`;
 }
 //this function creates a card
@@ -148,15 +135,7 @@ function createCard(episode) {
   return card;
 }
 function CreateShowsCard(show) {
-  // When your app starts, present a listing of all shows("shows listing")
-  // For each show, you must display at least name, image, summary, genres, status, rating, and runtime.
-  // When a show name is clicked, your app should:
-  // fetch and present episodes from that show(enabling episode search and selection as before)
-  // hide the "shows listing" view.
-  // Add a navigation link to enable the user to return to the "shows listing"
-  // When this is clicked, the episodes listing should be hidden
-  // Provide a free - text show search through show names, genres, and summary texts.
-  // Ensure that your episode search and episode selector controls still work correctly when you switch from shows listing to episodes listing and back.
+
   let showName = document.createElement("p");
   let showSummary = document.createElement("p");
   let showRated = document.createElement("p");
@@ -164,61 +143,115 @@ function CreateShowsCard(show) {
   let showStatus = document.createElement("p");
   let showRuntime = document.createElement("p");
   let showImage = document.createElement("img");
+  selectElement.style.display = "none";
+  labelElement.style.display = "none";
+  searchBarElement.style.display = 'none';
   showName = show.name;
   showSummary = show.summary;
   showRated = show.rating.average;
   showGenres = show.genres;
   showStatus = show.status;
   showRuntime = show.runtime;
+  let showId = show.id;
 
   // showImage = show.image.medium;
-  if (showImage === null) {
+  if (show.image === null) {
     let card = `<div class="col-md-5th-1 col-sm-4">
       <div class="showName">
-        <h2>${showName}</h2>
+        <button onclick = button(${showId})  class = "show-title" data-id = "${showId}" >${showName}</button>
       </div>
       <div class="show-image">
-        <img src= ${image ? show.image.medium : } alt='Show Image'>
+        <img src='images/no-image' alt='Show Image'>
       </div>
       <div class="show-summary">
         <p>${showSummary}</p>
       </div>
       <div class="show-details">
-        <p><span>Genres:</span> ${showGenres}</p>
-        <p><span>Status:</span> ${showStatus}</p>
-        <p><span>Runtime:</span> ${showRuntime}</p>
+        <p><b>Rated:</b> ${showRated}</p>
+        <p><b>Genres:</b> ${showGenres}</p>
+        <p><b>Status:</b> ${showStatus}</p>
+        <p><b>Runtime:</b> ${showRuntime}</p>
       </div>
     </div> `
     return card;
   } else {
     let card = `<div class="col-md-5th-1 col-sm-4">
       <div class="showName">
-        <h2>${showName}</h2>
+        <button onclick = button(${showId})>${showName}</button>
       </div>
       <div class="show-image">
-        <img src=${showImage} alt="Show Image">
+        <img src=${show.image.medium} alt="Show Image">
       </div>
       <div class="show-summary">
         <p>${showSummary}</p>
       </div>
       <div class="show-details">
-        <p><span>Genres</span>${showGenres}</p>
-        <p><span>Status</span>${showStatus}</p>
-        <p><span>Runtime</span>${showRuntime}</p>
+        <p><b>Rated:</b> ${showRated}</p>
+        <p><b>Genres:</b> ${showGenres}</p>
+        <p><b>Status:</b> ${showStatus}</p>
+        <p><b>Runtime:</b> ${showRuntime}</p>
       </div>
     </div> `
 
     return card;
   }
-  
-  
+
+  let selectedShows = document.querySelectorAll('.show-title');
+  console.log(selectedShows);
 
 }
 
+//each button
+function button(selectedShowId){
+  getAllEpisodesByFetch(
+    `https://api.tvmaze.com/shows/${selectedShowId}/episodes`
+  ).then((episodes) => {
+    allEpisodes = [...episodes];
+    totalEpisodes = allEpisodes;
+    makePageForEpisodes(allEpisodes, totalEpisodes);
+    showAllEpisodes(allEpisodes, createCard);
+    episodeList(allEpisodes);
+    showSearchBar.style.display = "none";
+    selectElement.style.display = "inline";
+    labelElement.style.display = "inline";
+    searchBarElement.style.display = "inline";
+  })
+}
+
+// let selectedShows = document.querySelectorAll('.show-title');
+// console.log(selectedShows);
+// selectedShows.forEach(selectedShow => {
+//   selectedShow.addEventListener('click', (e) => {
+
+//     let selectedTitle = e.currentTarget.dataSet;
+//     console.log(selectedTitle);
+    // if (e.target.value == 'lordOfTheShows') {
+    //   divRowElement = document.querySelector('.row');
+    //   divRowElement.parentNode.removeChild(divRowElement);
+    //   showSearchBar.style.display = "inline";
+    //   showAllEpisodes(shows, CreateShowsCard);
+
+    // } else {
+    //   const selectedShowId = e.target.value;
+    //   getAllEpisodesByFetch(
+    //     `https://api.tvmaze.com/shows/${selectedShowId}/episodes`
+    //   ).then((episodes) => {
+    //     allEpisodes = [...episodes];
+    //     totalEpisodes = allEpisodes;
+    //     makePageForEpisodes(allEpisodes, totalEpisodes);
+    //     showAllEpisodes(allEpisodes, createCard);
+    //     episodeList(allEpisodes);
+    //     showSearchBar.style.display = "none";
+    //     selectElement.style.display = "inline";
+    //     labelElement.style.display = "inline";
+    //     searchBarElement.style.display = "inline";
+    //   });
+    // }
+
+//   })
+// })
 
 
-
-console.log(shows);
 
 
 
@@ -244,7 +277,9 @@ labelElement.innerHTML = 'Choose an episode:';
 document.body.insertBefore(labelElement, rootElem);
 let selectElement = document.createElement('select');
 selectElement.id = 'choose-episode';
+
 labelElement.appendChild(selectElement);
+
 function episodeList(episodes) {
   selectElement.innerHTML = '';
   let optionElement = document.createElement('option');
@@ -274,7 +309,7 @@ selectElement.addEventListener('change', (e) => {
   document.getElementById('searchBar').value = '';
   divRowElement = document.querySelector('.row');
   divRowElement.parentNode.removeChild(divRowElement);
-  makePageForEpisodes(filteredEpisodes);
+  makePageForEpisodes(filteredEpisodes, totalEpisodes);
   showAllEpisodes(filteredEpisodes, createCard);
 });
 //here we create search bar
@@ -294,9 +329,43 @@ searchBarElement.addEventListener('keyup', (e) => {
   });
   divRowElement = document.querySelector('.row');
   divRowElement.parentNode.removeChild(divRowElement);
-  makePageForEpisodes(filteredEpisodes);
+  makePageForEpisodes(filteredEpisodes, totalEpisodes);
   showAllEpisodes(filteredEpisodes, createCard);
 });
+
+// new search bar for shows
+let showSearchBar = document.createElement('input');
+showSearchBar.setAttribute('type', 'text');
+showSearchBar.placeholder = 'your search term...';
+document.body.insertBefore(showSearchBar, rootElem);
+// showSearchBar event listener
+
+showSearchBar.addEventListener('keyup', (e) => {
+  console.log(e.target.value);
+  let searching = e.target.value.toLowerCase();
+  let filteredShows = shows.filter(show => {
+    // Provide a free - text show search through show names, genres, and summary texts.
+    return (
+      show.name.toLowerCase().includes(searching) ||
+      show.genres.map(x => x.toLowerCase()).includes(searching) ||
+      show.summary.toLowerCase().includes(searching)
+    )
+  })
+  divRowElement = document.querySelector('.row');
+  divRowElement.parentNode.removeChild(divRowElement);
+  // console.log(filteredShows);
+  showAllShows(filteredShows);
+  showAllEpisodes(filteredShows, CreateShowsCard);
+  // makePageForEpisodes(filteredShows, shows);
+
+})
+
+// click event for fetching a show from title
+
+
+
+
+
 
 
 
