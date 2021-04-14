@@ -75,7 +75,6 @@ function showAllShows(shows) {
 let totalEpisodes;
 selectShowEl = document.getElementById('display-shows');
 selectShowEl.addEventListener('change', (e) => {
-  console.log('select', e.target.value);
   if (e.target.value === 'lordOfTheShows') {
     divRowElement = document.querySelector('.row');
     divRowElement.parentNode.removeChild(divRowElement);
@@ -158,7 +157,7 @@ function CreateShowsCard(show) {
   if (show.image === null) {
     let card = `<div class="col-md-5th-1 col-sm-4">
       <div class="showName">
-        <button onclick = button(${showId})  class = "show-title" data-id = "${showId}" >${showName}</button>
+        <button onclick = handleShowSelection(${showId})  class = "show-title" data-id = "${showId}" >${showName}</button>
       </div>
       <div class="show-image">
         <img src='images/no-image' alt='Show Image'>
@@ -177,7 +176,7 @@ function CreateShowsCard(show) {
   } else {
     let card = `<div class="col-md-5th-1 col-sm-4">
       <div class="showName">
-        <button onclick = button(${showId})>${showName}</button>
+        <button onclick = handleShowSelection(${showId})>${showName}</button>
       </div>
       <div class="show-image">
         <img src=${show.image.medium} alt="Show Image">
@@ -202,7 +201,9 @@ function CreateShowsCard(show) {
 }
 
 //each button
-function button(selectedShowId){
+
+
+function handleShowSelection(selectedShowId) {
   getAllEpisodesByFetch(
     `https://api.tvmaze.com/shows/${selectedShowId}/episodes`
   ).then((episodes) => {
@@ -211,11 +212,13 @@ function button(selectedShowId){
     makePageForEpisodes(allEpisodes, totalEpisodes);
     showAllEpisodes(allEpisodes, createCard);
     episodeList(allEpisodes);
-    showSearchBar.style.display = "none";
-    selectElement.style.display = "inline";
-    labelElement.style.display = "inline";
-    searchBarElement.style.display = "inline";
-  })
+    const selectShowEl = document.getElementById('display-shows');
+    selectShowEl.value = selectedShowId;
+    showSearchBar.style.display = 'none';
+    selectElement.style.display = 'inline';
+    labelElement.style.display = 'inline';
+    searchBarElement.style.display = 'inline';
+  });
 }
 
 // let selectedShows = document.querySelectorAll('.show-title');
@@ -225,28 +228,28 @@ function button(selectedShowId){
 
 //     let selectedTitle = e.currentTarget.dataSet;
 //     console.log(selectedTitle);
-    // if (e.target.value == 'lordOfTheShows') {
-    //   divRowElement = document.querySelector('.row');
-    //   divRowElement.parentNode.removeChild(divRowElement);
-    //   showSearchBar.style.display = "inline";
-    //   showAllEpisodes(shows, CreateShowsCard);
+// if (e.target.value == 'lordOfTheShows') {
+//   divRowElement = document.querySelector('.row');
+//   divRowElement.parentNode.removeChild(divRowElement);
+//   showSearchBar.style.display = "inline";
+//   showAllEpisodes(shows, CreateShowsCard);
 
-    // } else {
-    //   const selectedShowId = e.target.value;
-    //   getAllEpisodesByFetch(
-    //     `https://api.tvmaze.com/shows/${selectedShowId}/episodes`
-    //   ).then((episodes) => {
-    //     allEpisodes = [...episodes];
-    //     totalEpisodes = allEpisodes;
-    //     makePageForEpisodes(allEpisodes, totalEpisodes);
-    //     showAllEpisodes(allEpisodes, createCard);
-    //     episodeList(allEpisodes);
-    //     showSearchBar.style.display = "none";
-    //     selectElement.style.display = "inline";
-    //     labelElement.style.display = "inline";
-    //     searchBarElement.style.display = "inline";
-    //   });
-    // }
+// } else {
+//   const selectedShowId = e.target.value;
+//   getAllEpisodesByFetch(
+//     `https://api.tvmaze.com/shows/${selectedShowId}/episodes`
+//   ).then((episodes) => {
+//     allEpisodes = [...episodes];
+//     totalEpisodes = allEpisodes;
+//     makePageForEpisodes(allEpisodes, totalEpisodes);
+//     showAllEpisodes(allEpisodes, createCard);
+//     episodeList(allEpisodes);
+//     showSearchBar.style.display = "none";
+//     selectElement.style.display = "inline";
+//     labelElement.style.display = "inline";
+//     searchBarElement.style.display = "inline";
+//   });
+// }
 
 //   })
 // })
@@ -338,8 +341,8 @@ let showSearchBar = document.createElement('input');
 showSearchBar.setAttribute('type', 'text');
 showSearchBar.placeholder = 'your search term...';
 document.body.insertBefore(showSearchBar, rootElem);
-// showSearchBar event listener
 
+// showSearchBar event listener
 showSearchBar.addEventListener('keyup', (e) => {
   console.log(e.target.value);
   let searching = e.target.value.toLowerCase();
